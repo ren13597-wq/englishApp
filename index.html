@@ -9,40 +9,24 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    /* Custom scrollbar for preview elements */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen pb-12 select-none md:select-auto">
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-12">
 
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 md:px-6 py-4">
-    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
-      <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-        <div class="flex items-center gap-3">
-          <div class="bg-gradient-to-tr from-indigo-600 to-amber-500 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-600/30">
-            <i class="ph-bold ph-lightning text-2xl"></i>
-          </div>
-          <div>
-            <h1 class="font-extrabold text-lg tracking-tight flex items-center gap-2">
-              English Sparring Vault
-              <span id="file-sync-badge" class="hidden bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-mono px-2 py-0.5 rounded-full items-center gap-1">
-                <i class="ph-bold ph-arrows-clockwise text-xs"></i> phrases.json 連携中
-              </span>
-            </h1>
-            <p class="text-xs text-slate-400">2週間の無意識・即応回路構築 ＆ Gemini連携プログラム</p>
-          </div>
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white p-2 rounded-xl">
+          <i class="ph-bold ph-lightning text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-tight">English Sparring & Phrase Vault</h1>
+          <p class="text-xs text-slate-400">2週間の無意識・即応回路構築プログラム</p>
         </div>
       </div>
-      
-      <div class="flex items-center gap-2 text-xs w-full sm:w-auto justify-end">
-        <button onclick="openImportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/80 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
-          <i class="ph-bold ph-arrows-down-up text-amber-400"></i>
-          一括JSON/ファイル連携
-        </button>
+      <div class="flex gap-2 text-xs">
+        <span class="bg-indigo-950 text-indigo-400 border border-indigo-800/50 px-3 py-1.5 rounded-full font-medium">1日3分・口の筋肉記憶</span>
       </div>
     </div>
   </header>
@@ -51,7 +35,7 @@
   <main class="max-w-4xl mx-auto px-4 md:px-6 pt-6 space-y-6">
 
     <!-- Tab Navigation -->
-    <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800 shadow-inner">
+    <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
       <button id="tab-sparring-btn" onclick="switchTab('sparring')" class="flex-1 py-2.5 rounded-lg text-xs md:text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
         <i class="ph-bold ph-sword text-base md:text-lg"></i>
         瞬間スパーリング
@@ -59,99 +43,85 @@
       <button id="tab-vault-btn" onclick="switchTab('vault')" class="flex-1 py-2.5 rounded-lg text-xs md:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
         <i class="ph-bold ph-database text-base md:text-lg"></i>
         フレーズ金庫
-        <span id="vault-count-badge" class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+        <span id="vault-count-badge" class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full">0</span>
+      </button>
+      <button id="tab-sync-btn" onclick="switchTab('sync')" class="flex-1 py-2.5 rounded-lg text-xs md:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
+        <i class="ph-bold ph-file-code text-base md:text-lg"></i>
+        JSON / Gemini連動
       </button>
       <button id="tab-guide-btn" onclick="switchTab('guide')" class="flex-1 py-2.5 rounded-lg text-xs md:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
         <i class="ph-bold ph-book-open text-base md:text-lg"></i>
-        Gemini連携ガイド
+        ガイド
       </button>
     </div>
 
     <!-- SPARRING TAB -->
     <section id="tab-sparring" class="space-y-6">
-      
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
-        <!-- Top bar of sparring card -->
-        <div class="flex flex-wrap justify-between items-center gap-2 mb-6">
-          <div class="flex items-center gap-2">
-            <span id="category-badge" class="bg-indigo-950/80 text-indigo-300 border border-indigo-700/50 text-xs font-semibold px-3 py-1 rounded-md">
-              お題を選択してください
-            </span>
-            <span id="timer-badge" class="hidden bg-rose-950/80 text-rose-300 border border-rose-800/80 text-xs font-bold px-2.5 py-1 rounded-md animate-pulse">
-              <i class="ph-bold ph-timer"></i> 3秒制限
-            </span>
-          </div>
-          <div class="text-xs text-amber-400 flex items-center gap-1 font-semibold bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+        <div class="flex justify-between items-start mb-6">
+          <span id="category-badge" class="bg-indigo-900/50 text-indigo-300 border border-indigo-700/50 text-xs font-semibold px-3 py-1 rounded-md">
+            お題を選択してください
+          </span>
+          <div class="text-xs text-amber-400 flex items-center gap-1 font-semibold">
             <i class="ph-fill ph-fire text-amber-500 text-base"></i>
-            本日のトレーニング: <span id="done-count" class="font-bold font-mono text-sm">0</span> 回完了
+            完了: <span id="done-count">0</span>回
           </div>
         </div>
 
-        <!-- Prompt Text Box -->
-        <div class="min-h-[130px] flex flex-col justify-center">
-          <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1">
-            <i class="ph-bold ph-chat-circle-dots text-indigo-400"></i> 日本語の意図（3秒以内に口に出す）
-          </p>
+        <div class="min-h-[120px] flex flex-col justify-center">
+          <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">日本語の意図（3秒以内に口に出す）</p>
           <h2 id="prompt-jp" class="text-xl md:text-2xl font-bold text-slate-100 leading-relaxed">
             「次のお題を開始する」ボタンを押してスパーリングを開始してください。
           </h2>
         </div>
 
-        <!-- Hidden Answer Box -->
         <div id="answer-box" class="mt-6 pt-6 border-t border-slate-800/80 hidden space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
               <i class="ph-bold ph-check-circle"></i> 発射型テンプレート（型）
             </span>
-            <button onclick="speakCurrentAnswer()" class="text-xs text-indigo-300 hover:text-white flex items-center gap-1.5 font-semibold bg-indigo-950/80 px-3 py-1.5 rounded-lg border border-indigo-800/60 hover:bg-indigo-900 transition">
-              <i class="ph-bold ph-speaker-high text-base text-amber-400"></i> 音声を聞く
+            <button onclick="speakCurrentAnswer()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold bg-indigo-950/80 px-2.5 py-1 rounded-md border border-indigo-800/50">
+              <i class="ph-bold ph-speaker-high text-base"></i> 発音を聞く
             </button>
           </div>
-          <p id="prompt-en" class="text-lg md:text-xl font-extrabold text-indigo-200 font-mono tracking-tight bg-slate-900/90 p-4 rounded-xl border border-indigo-900/50 shadow-inner"></p>
-          <div class="text-xs text-slate-300 bg-slate-900/80 p-3.5 rounded-xl border border-slate-800/80 leading-relaxed flex items-start gap-2">
-            <i class="ph-bold ph-info text-indigo-400 text-base shrink-0 mt-0.5"></i>
-            <span id="prompt-tip">解説テキスト</span>
-          </div>
+          <p id="prompt-en" class="text-lg md:text-xl font-extrabold text-indigo-200 font-mono tracking-tight"></p>
+          <p id="prompt-tip" class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-lg border border-slate-800/80 leading-relaxed"></p>
         </div>
 
-        <!-- Action Buttons -->
         <div class="mt-8 flex flex-wrap gap-3 items-center justify-between">
-          <button id="next-btn" onclick="nextPrompt()" class="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-indigo-600/30">
+          <button id="next-btn" onclick="nextPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-indigo-600/30">
             <i class="ph-bold ph-play"></i> 次のお題を開始する
           </button>
-          <button id="reveal-btn" onclick="revealAnswer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-3.5 rounded-xl transition text-sm hidden border border-slate-700">
-            <i class="ph-bold ph-eye mr-1"></i> 答えと「型」を確認する
+          <button id="reveal-btn" onclick="revealAnswer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-3.5 rounded-xl transition text-sm hidden">
+            答えと「型」を確認する
           </button>
         </div>
       </div>
 
-      <!-- Training Tips -->
-      <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400 space-y-1.5">
-        <p class="font-bold text-slate-200 flex items-center gap-1.5 text-sm">
-          <i class="ph-bold ph-lightning text-amber-400"></i> スパーリングの鉄則
+      <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400 space-y-1.5">
+        <p class="font-bold text-slate-300 flex items-center gap-1.5 text-sm">
+          <i class="ph-bold ph-info text-indigo-400"></i> スパーリングの鉄則
         </p>
-        <p>1. 完璧な文法より<b>3秒以内の即答（単語だけでもOK）</b>を最優先します。</p>
-        <p>2. 答えを確認したら、頭ではなく<b>口の筋肉記憶になるまで滑らかに3回連続音読</b>してください。</p>
+        <p>1. 完璧な英文を作る必要はありません。3秒以内に声（単語1つでも）を出すこと。</p>
+        <p>2. 答えを確認したら、**滑らかに言えるスピードで3回口に出す**（筋肉記憶）。</p>
       </div>
-
     </section>
 
     <!-- VAULT TAB -->
     <section id="tab-vault" class="space-y-6 hidden">
-      
       <!-- AI Phrase Generator Form -->
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-5 shadow-xl">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
             <i class="ph-bold ph-sparkle text-amber-400 text-lg"></i>
-            日本語から「発射型英語」をAI自動判定
+            言いたい日本語から「英語・解説・カテゴリ」を自動作成
           </h3>
-          <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-800/50 px-2.5 py-1 rounded-full font-semibold">ブラウザ内AIエンジン</span>
+          <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-800/50 px-2.5 py-1 rounded-full font-semibold">AIアシスト変換</span>
         </div>
 
         <div class="space-y-3">
           <div class="flex flex-col sm:flex-row gap-2">
-            <input id="input-ai-jp" type="text" placeholder="例: 今日のミーティング、少し遅れそうです" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+            <input id="input-ai-jp" type="text" placeholder="例: 一旦確認して、今日の夕方までに折り返します" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
             <button id="ai-gen-btn" onclick="generateWithAI()" class="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-indigo-600/20">
               <i class="ph-bold ph-magic-wand text-base"></i> AIで変換する
             </button>
@@ -163,7 +133,7 @@
           <div class="flex justify-between items-center">
             <span id="ai-res-cat" class="text-[10px] bg-indigo-950 border border-indigo-700/60 text-indigo-300 px-2.5 py-0.5 rounded-md font-semibold"></span>
             <span class="text-[10px] text-amber-400 flex items-center gap-1 font-semibold">
-              <i class="ph-bold ph-check-circle"></i> AI判定完了
+              <i class="ph-bold ph-check"></i> 変換成功
             </span>
           </div>
           <div>
@@ -171,7 +141,7 @@
             <p id="ai-res-jp" class="text-sm font-medium text-slate-200"></p>
           </div>
           <div>
-            <p class="text-[11px] text-slate-400 font-semibold mb-0.5">発射型フレーズ（型）</p>
+            <p class="text-[11px] text-slate-400 font-semibold mb-0.5">発射型英語フレーズ（型）</p>
             <p id="ai-res-en" class="text-base font-extrabold text-indigo-200 font-mono tracking-tight bg-slate-950 p-3 rounded-lg border border-slate-800/80"></p>
           </div>
           <div>
@@ -179,210 +149,142 @@
             <p id="ai-res-tip" class="text-xs text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 leading-relaxed"></p>
           </div>
           <button onclick="saveAIGeneratedPhrase()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
-            <i class="ph-bold ph-floppy-disk text-base"></i> このフレーズを金庫に登録する
+            <i class="ph-bold ph-floppy-disk text-base"></i> この内容でフレーズ金庫に登録する
           </button>
         </div>
 
-        <!-- Manual Add Accordion -->
+        <!-- Manual Input Section -->
         <details class="text-xs text-slate-400 pt-2 border-t border-slate-900">
-          <summary class="cursor-pointer hover:text-slate-300 font-medium py-1">手動で英語と日本語を個別に登録する</summary>
+          <summary class="cursor-pointer hover:text-slate-300 font-medium">手動で英語と日本語を入力して登録したい場合</summary>
           <div class="pt-3 space-y-3">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input id="input-jp" type="text" placeholder="日本語: 例) 念のため確認させてください" class="bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-              <input id="input-en" type="text" placeholder="英語: 例) Just to be safe, let me check." class="bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input id="input-cat" type="text" placeholder="カテゴリ: 例) 確認・調整" class="bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-              <input id="input-tip" type="text" placeholder="ポイント: 例) Just to be safe を頭につける" class="bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-            </div>
-            <button onclick="addCustomPhraseManual()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2 rounded-lg text-xs transition border border-slate-700">
-              手動で追加
+            <input id="input-jp" type="text" placeholder="日本語: 例) 念のため確認させてください" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100">
+            <input id="input-en" type="text" placeholder="英語: 例) Just to be safe, let me check." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100">
+            <input id="input-tip" type="text" placeholder="ポイント: 例) Just to be safe を頭につける" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100">
+            <button onclick="addCustomPhraseManual()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2 rounded-lg text-xs transition">
+              手動で登録
             </button>
           </div>
         </details>
       </div>
 
-      <!-- Vault Controls: Search & Filters -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
-        <div class="relative w-full sm:w-72">
-          <i class="ph-bold ph-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-sm"></i>
-          <input id="vault-search" type="text" oninput="filterVault()" placeholder="フレーズを検索..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-        </div>
+      <!-- Vault List Header -->
+      <div class="flex justify-between items-center px-1">
+        <h3 class="text-sm font-bold text-slate-300">登録済みフレーズ一覧</h3>
+        <button onclick="exportJSON()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+          <i class="ph-bold ph-download-simple"></i> JSONダウンロード
+        </button>
+      </div>
 
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button onclick="openImportModal()" class="bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-800 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
-            <i class="ph-bold ph-file-code text-sm"></i> JSON一括連携
+      <!-- Vault List -->
+      <div id="vault-list" class="space-y-3"></div>
+    </section>
+
+    <!-- JSON / GEMINI SYNC TAB -->
+    <section id="tab-sync" class="space-y-6 hidden">
+      
+      <!-- Direct File Handle Connection (File System Access API) -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <i class="ph-bold ph-floppy-disk-back text-indigo-400 text-lg"></i>
+            ローカル `phrases.json` 直接保存・連動
+          </h3>
+          <span id="file-status-tag" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-full font-semibold">未接続</span>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Geminiと共有しているリポジトリ内の `phrases.json` ファイルを本アプリで一発指定しておくと、アプリ内での追加・削除がリアルタイムでそのファイルに上書き更新されます。
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+          <button onclick="openLocalFile()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-md">
+            <i class="ph-bold ph-folder-open text-base"></i> `phrases.json` を開いて連動
+          </button>
+          <button id="save-file-btn" onclick="saveToConnectedFile()" disabled class="bg-slate-800 text-slate-500 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2 border border-slate-700/50">
+            <i class="ph-bold ph-floppy-disk text-base"></i> ファイルに直接上書き保存
           </button>
         </div>
       </div>
 
-      <!-- Vault List -->
-      <div id="vault-list" class="space-y-3">
-        <!-- Dynamic content -->
+      <!-- Gemini Prompt Copy Helper -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <i class="ph-bold ph-chat-circle-dots text-amber-400 text-lg"></i>
+            Gemini用「JSON一括出力プロンプト」
+          </h3>
+          <button onclick="copyGeminiPrompt()" class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg hover:bg-amber-500/30 transition flex items-center gap-1 font-semibold">
+            <i class="ph-bold ph-copy"></i> プロンプトをコピー
+          </button>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Geminiで英語学習を行った後、以下の文章をそのままGeminiにチャットで送信してください。出力されたJSONコードブロックを下の入力欄に貼り付けるだけで一瞬でアプリに取り込めます。
+        </p>
+        <pre class="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-300 font-mono whitespace-pre-wrap select-all">今日の英語学習で出てきた重要フレーズを、アプリ登録用に以下のJSON形式の配列のみで出力してください。Markdownのjsonコードブロック形式で出力してください。
+
+[
+  {
+    "jp": "日本語の意図",
+    "en": "発射型英語フレーズ",
+    "cat": "カテゴリー名（例: 仕事の即答 / 意見主張 / 調整）",
+    "tip": "口に馴染ませるためのポイントや解説"
+  }
+]</pre>
       </div>
+
+      <!-- JSON Raw Paste / Import -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+          <i class="ph-bold ph-code text-indigo-400 text-lg"></i>
+          JSON一括インポート / エクスポート
+        </h3>
+        
+        <div class="space-y-2">
+          <textarea id="json-input" rows="6" placeholder='[{"jp":"...","en":"...","cat":"...","tip":"..."}] またはGeminiが出力したコードブロックを直接貼り付けてください' class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"></textarea>
+          
+          <div class="flex flex-wrap justify-between gap-2">
+            <button onclick="importJSONFromInput()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+              <i class="ph-bold ph-arrow-down-left text-base"></i> JSONを一括インポート（追加）
+            </button>
+            <button onclick="fillCurrentJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+              <i class="ph-bold ph-copy"></i> 現在の全データをJSON表示
+            </button>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- GUIDE TAB -->
     <section id="tab-guide" class="space-y-6 hidden">
-      
-      <!-- Gemini Integration Guide Card -->
-      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-xl">
-        <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-          <div class="bg-amber-500/10 text-amber-400 p-2.5 rounded-xl border border-amber-500/20">
-            <i class="ph-bold ph-arrows-merge text-2xl"></i>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-slate-100">Gemini学習モード ↔ アプリ完全自動連携ガイド</h2>
-            <p class="text-xs text-slate-400">Geminiで英会話練習をしながらフレーズを自動追加・編集する2つの方法</p>
-          </div>
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <i class="ph-bold ph-compass text-indigo-400"></i>
+            2週間集中プログラム & Gemini運用ガイド
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">意志の力に頼らず、無意識の反応速度を上げる仕組みです。</p>
         </div>
 
-        <!-- Method 1: direct phrases.json -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-bold text-indigo-300 flex items-center gap-2">
-            <span class="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2 py-0.5 rounded text-xs">方法 1</span>
-            ローカルファイル `phrases.json` を直接編集・同期する（推奨）
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Google DriveやPCの作業フォルダ、VS Code作業空間に `phrases.json` を保存しておくことで、<b>Geminiに直接ファイルを読み書き・追記編集させることができます。</b>
-          </p>
-          
-          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2 text-xs text-slate-300">
-            <p class="font-bold text-amber-400">ステップ:</p>
-            <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
-              <li>画面上部の「<b>一括JSON/ファイル連携</b>」を押します。</li>
-              <li>「<b>phrases.jsonを保存・書き出し</b>」をクリックしてローカルフォルダに保存します。</li>
-              <li>Geminiで学習中、Geminiに `phrases.json` を読み込ませて<b>「追加・編集した新しいJSONを出力して」</b>と頼みます。</li>
-              <li>アプリ側で<b>「phrases.jsonを開く/直接同期」</b>を押してファイルを選択すると、即座にアプリ全体へ反映されます！</li>
-            </ol>
+        <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
+            <p class="font-bold text-indigo-300">Phase 1（1〜4日目）: 3秒即応のリハビリ</p>
+            <p class="text-slate-400">お題が出たら完璧な文法を目指さず、知っている単語を3秒以内に1つ口に出します。</p>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
+            <p class="font-bold text-indigo-300">Phase 2（5〜9日目）: 理由・接続詞の追加</p>
+            <p class="text-slate-400">単文で終わらせず、because / so / but を挟んで1節足す癖をつけます。</p>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
+            <p class="font-bold text-indigo-300">Phase 3（10〜14日目）: Gemini学習回路のドッキング</p>
+            <p class="text-slate-400">Geminiで英語を学習したらフレーズをJSONで出力させ、アプリに取り込んで日常的に3秒即応スパーリングを回します。</p>
           </div>
         </div>
-
-        <!-- Method 2: Copy Paste Prompt -->
-        <div class="space-y-3 pt-2">
-          <h3 class="text-sm font-bold text-indigo-300 flex items-center gap-2">
-            <span class="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2 py-0.5 rounded text-xs">方法 2</span>
-            Gemini用プロンプトをコピペしてJSON一括貼り付け
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            ファイルを介さずにGeminiのチャット欄で一括出力させ、本アプリの「JSON一括インポート」に貼り付けるだけで瞬時に全フレーズがインポートされます。
-          </p>
-
-          <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-slate-300">Geminiに送る専用プロンプト（コピーしてご使用ください）</span>
-              <button onclick="copyGeminiPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1 shadow">
-                <i class="ph-bold ph-copy"></i> プロンプトをコピー
-              </button>
-            </div>
-            <pre id="gemini-prompt-text" class="text-[11px] font-mono text-indigo-200 bg-slate-950 p-3 rounded-lg border border-slate-800/80 whitespace-pre-wrap leading-relaxed select-all">今日の英会話で学んだフレーズや、表現できなかった日本語を抽出し、以下のJSONフォーマットの配列で出力してください。マークダウンの ```json のコードブロックで囲んでください。
-
-フォーマット例:
-[
-  {
-    "jp": "念のため、認識を合わせておきましょう。",
-    "en": "Just to make sure, let's align on this.",
-    "cat": "仕事・確認",
-    "tip": "Just to make sure... を文頭に置くことで自然に確認できます。"
-  }
-]</pre>
-          </div>
-        </div>
-
-        <!-- 2-Week Routine guide -->
-        <div class="border-t border-slate-800 pt-6 space-y-4">
-          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-            <i class="ph-bold ph-compass text-indigo-400"></i> 2週間スパーリングプログラムの進め方
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
-              <p class="font-bold text-indigo-400">1〜4日目: 3秒即応</p>
-              <p class="text-slate-400">文法を気にせず、知っている単語を3秒以内に1つ声に出すリハビリ。</p>
-            </div>
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
-              <p class="font-bold text-indigo-400">5〜9日目: 型の定着</p>
-              <p class="text-slate-400">『Let me check...』『Where are we...』などの先頭の型を無意識に発射する。</p>
-            </div>
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1">
-              <p class="font-bold text-indigo-400">10〜14日目: 実戦・Gemini循環</p>
-              <p class="text-slate-400">Geminiとの会話から『言えなかった表現』を取り込み、完璧な自作金庫を作成。</p>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- JSON BATCH & FILE SYNC MODAL -->
-  <div id="import-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-      
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
-          <i class="ph-bold ph-arrows-down-up text-indigo-400 text-lg"></i>
-          JSON一括連携 ＆ File System Direct Sync
-        </h3>
-        <button onclick="closeImportModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
-          <i class="ph-bold ph-x text-lg"></i>
-        </button>
-      </div>
-
-      <!-- Option A: Direct File Sync -->
-      <div class="bg-slate-950 p-4 rounded-xl border border-indigo-900/50 space-y-3">
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
-            <i class="ph-bold ph-file-js text-base text-amber-400"></i> 方法A: ローカルファイル `phrases.json` 直連動
-          </span>
-          <span class="text-[10px] bg-indigo-950 border border-indigo-800 text-indigo-300 px-2 py-0.5 rounded">Gemini直接編集用</span>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Geminiに編集させた `phrases.json` ファイルをアプリに開くか、現在の金庫データを `phrases.json` として書き出して連携フォルダに保存できます。
-        </p>
-        <div class="flex flex-wrap gap-2 pt-1">
-          <button onclick="openLocalFile()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5 shadow">
-            <i class="ph-bold ph-folder-open text-base"></i> phrases.json を開く / 読み込む
-          </button>
-          <button onclick="exportJSONFile()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-4 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
-            <i class="ph-bold ph-download-simple text-base text-emerald-400"></i> phrases.json を保存・書き出し
-          </button>
-          <input type="file" id="file-input" accept=".json" class="hidden" onchange="handleFileSelect(event)">
-        </div>
-      </div>
-
-      <!-- Option B: Paste JSON -->
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-bold text-slate-300">方法B: JSONテキストを貼り付けて一括追加</span>
-          <button onclick="copyGeminiPrompt()" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
-            <i class="ph-bold ph-copy"></i> Gemini用プロンプトをコピー
-          </button>
-        </div>
-        <textarea id="json-textarea" rows="6" placeholder='[&#10;  {&#10;    "jp": "念のため確認させてください",&#10;    "en": "Just to be safe, let me check.",&#10;    "cat": "確認",&#10;    "tip": "Just to be safe を頭につける"&#10;  }&#10;]' class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
-        <button onclick="copyCurrentVaultJSON()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center gap-1.5">
-          <i class="ph-bold ph-copy text-sm"></i> 現在の金庫データ(JSON)をコピー
-        </button>
-        
-        <div class="flex gap-2 w-full sm:w-auto">
-          <button onclick="closeImportModal()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-4 py-2.5 rounded-xl transition">
-            キャンセル
-          </button>
-          <button onclick="processJSONImport()" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-1.5">
-            <i class="ph-bold ph-plus-circle text-base"></i> JSONを一括取り込み
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   <script>
-    // Initial Default Seed Data
     const initialPrompts = [
       {
         id: "p1",
@@ -411,12 +313,11 @@
     let doneCount = 0;
     let tempAIPhrase = null;
     let vault = [];
-    let fileHandle = null; // File System Access API handle if supported
+    let fileHandle = null;
 
-    // Load initial data from localStorage
+    // Load Initial Data
     try {
-      const stored = localStorage.getItem('english_vault');
-      vault = stored ? JSON.parse(stored) : initialPrompts;
+      vault = JSON.parse(localStorage.getItem('english_vault')) || initialPrompts;
     } catch(e) {
       vault = initialPrompts;
     }
@@ -426,16 +327,15 @@
         localStorage.setItem('english_vault', JSON.stringify(vault));
       } catch(e){}
       updateVaultUI();
-
-      // If tied to direct File Handle, sync automatically
       if (fileHandle) {
-        saveToFileHandle();
+        saveToConnectedFile();
       }
     }
 
     function switchTab(tab) {
       document.getElementById('tab-sparring').classList.toggle('hidden', tab !== 'sparring');
       document.getElementById('tab-vault').classList.toggle('hidden', tab !== 'vault');
+      document.getElementById('tab-sync').classList.toggle('hidden', tab !== 'sync');
       document.getElementById('tab-guide').classList.toggle('hidden', tab !== 'guide');
 
       const btnClasses = {
@@ -445,33 +345,28 @@
 
       document.getElementById('tab-sparring-btn').className = tab === 'sparring' ? btnClasses.active : btnClasses.inactive;
       document.getElementById('tab-vault-btn').className = tab === 'vault' ? btnClasses.active : btnClasses.inactive;
+      document.getElementById('tab-sync-btn').className = tab === 'sync' ? btnClasses.active : btnClasses.inactive;
       document.getElementById('tab-guide-btn').className = tab === 'guide' ? btnClasses.active : btnClasses.inactive;
     }
 
-    // SPARRING ENGINE
     function nextPrompt() {
-      if (vault.length === 0) {
-        document.getElementById('prompt-jp').innerText = "金庫にフレーズがありません。「フレーズ金庫」タブで追加してください。";
-        return;
-      }
+      if (vault.length === 0) return;
       const randomIndex = Math.floor(Math.random() * vault.length);
       currentPrompt = vault[randomIndex];
 
-      document.getElementById('category-badge').innerText = currentPrompt.cat || "一般フレーズ";
+      document.getElementById('category-badge').innerText = currentPrompt.cat || "カスタムフレーズ";
       document.getElementById('prompt-jp').innerText = currentPrompt.jp;
       document.getElementById('prompt-en').innerText = currentPrompt.en;
       document.getElementById('prompt-tip').innerText = currentPrompt.tip || "口に馴染むまで3回声に出してみましょう。";
 
       document.getElementById('answer-box').classList.add('hidden');
       document.getElementById('reveal-btn').classList.remove('hidden');
-      document.getElementById('timer-badge').classList.remove('hidden');
     }
 
     function revealAnswer() {
       if (!currentPrompt) return;
       document.getElementById('answer-box').classList.remove('hidden');
       document.getElementById('reveal-btn').classList.add('hidden');
-      document.getElementById('timer-badge').classList.add('hidden');
       doneCount++;
       document.getElementById('done-count').innerText = doneCount;
       speakCurrentAnswer();
@@ -492,7 +387,58 @@
       }
     }
 
-    // AI TRANSLATION ENGINE (Browser Context Synthesizer)
+    // Local File Handle Sync (File System Access API)
+    async function openLocalFile() {
+      if (!('showOpenFilePicker' in window)) {
+        alert("お使いのブラウザはローカルファイルの直接連携に対応していません。JSONコピペ連携をご利用ください。");
+        return;
+      }
+      try {
+        [fileHandle] = await window.showOpenFilePicker({
+          types: [{
+            description: 'JSON Files',
+            accept: { 'application/json': ['.json'] }
+          }]
+        });
+        const file = await fileHandle.getFile();
+        const content = await file.text();
+        const parsed = JSON.parse(content);
+
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          vault = parsed.map((item, idx) => ({
+            id: item.id || "f_" + idx + "_" + Date.now(),
+            jp: item.jp || "",
+            en: item.en || "",
+            cat: item.cat || "ファイル読込",
+            tip: item.tip || ""
+          }));
+          saveVault();
+          alert(`${vault.length}件のフレーズを phrases.json から読み込みました！`);
+        }
+
+        document.getElementById('file-status-tag').innerText = "連動中: " + fileHandle.name;
+        document.getElementById('file-status-tag').className = "text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800/80 px-2.5 py-1 rounded-full font-semibold";
+        
+        const saveBtn = document.getElementById('save-file-btn');
+        saveBtn.disabled = false;
+        saveBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-md";
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function saveToConnectedFile() {
+      if (!fileHandle) return;
+      try {
+        const writable = await fileHandle.createWritable();
+        await writable.write(JSON.stringify(vault, null, 2));
+        await writable.close();
+      } catch (err) {
+        console.error("ファイル保存エラー:", err);
+      }
+    }
+
+    // AI Translation Engine (Smart Context Synthesizer)
     function generateWithAI() {
       const inputJp = document.getElementById('input-ai-jp').value.trim();
       if (!inputJp) {
@@ -502,7 +448,7 @@
 
       const btn = document.getElementById('ai-gen-btn');
       btn.disabled = true;
-      btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> AI判定中...`;
+      btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> AI変換中...`;
 
       setTimeout(() => {
         let category = "ビジネス実践";
@@ -523,17 +469,17 @@
           category = "意見・提案";
           enPhrase = "From my perspective, it might be better to take a different approach.";
           tip = "『From my perspective...』を使うと、自分の意見を角を立てずにプロフェッショナルに主張できます。";
-        } else if (txt.includes("時間") || txt.includes("忙しい") || txt.includes("無理") || txt.includes("厳しい") || txt.includes("遅れ")) {
-          category = "調整・連絡";
-          enPhrase = "I'm running a bit behind, but I can handle it first thing tomorrow.";
-          tip = "『I'm running a bit behind...』（少し遅れていて）と事前に伝えるスムーズな状況共有パターンです。";
+        } else if (txt.includes("時間") || txt.includes("忙しい") || txt.includes("無理") || txt.includes("厳しい")) {
+          category = "調整・交渉";
+          enPhrase = "I'm a bit tied up right now, but I can handle it first thing tomorrow.";
+          tip = "『I'm a bit tied up...』（手一杯で）と否定しつつ、代替案（明日一番で）を出す好印象な断り方です。";
         } else if (txt.includes("理由") || txt.includes("なぜ") || txt.includes("だから") || txt.includes("ため")) {
           category = "論理・説明";
           enPhrase = "Mainly because we need to balance efficiency and quality.";
           tip = "『Mainly because...』で話を始めることで、理由を結論からクリアに伝えることができます。";
         } else {
           category = "万能テンプレート";
-          enPhrase = `Just to clarify, we need to align on the next steps to keep things moving.`;
+          enPhrase = `Just to clarify, we should double-check the details before moving forward.`;
           tip = "『Just to clarify...』（念のため明確にすると）を先頭に置いて話し始める実践フレーズです。";
         }
 
@@ -553,7 +499,7 @@
         document.getElementById('ai-preview').classList.remove('hidden');
         btn.disabled = false;
         btn.innerHTML = `<i class="ph-bold ph-magic-wand text-base"></i> AIで変換する`;
-      }, 350);
+      }, 400);
     }
 
     function saveAIGeneratedPhrase() {
@@ -572,7 +518,6 @@
     function addCustomPhraseManual() {
       const jp = document.getElementById('input-jp').value.trim();
       const en = document.getElementById('input-en').value.trim();
-      const cat = document.getElementById('input-cat').value.trim() || "手動登録";
       const tip = document.getElementById('input-tip').value.trim();
 
       if (!jp || !en) {
@@ -584,14 +529,13 @@
         id: "c_" + Date.now(),
         jp: jp,
         en: en,
-        cat: cat,
-        tip: tip || "日常でよく使うカスタムフレーズです。"
+        cat: "手動登録",
+        tip: tip || "自分が日常でよく使うフレーズです。"
       });
 
       saveVault();
       document.getElementById('input-jp').value = "";
       document.getElementById('input-en').value = "";
-      document.getElementById('input-cat').value = "";
       document.getElementById('input-tip').value = "";
       alert("登録しました！");
     }
@@ -601,43 +545,30 @@
       saveVault();
     }
 
-    function filterVault() {
-      updateVaultUI();
-    }
-
     function updateVaultUI() {
       const container = document.getElementById('vault-list');
-      const searchQuery = (document.getElementById('vault-search')?.value || '').toLowerCase();
       document.getElementById('vault-count-badge').innerText = vault.length;
 
-      const filtered = vault.filter(item => 
-        (item.jp && item.jp.toLowerCase().includes(searchQuery)) ||
-        (item.en && item.en.toLowerCase().includes(searchQuery)) ||
-        (item.cat && item.cat.toLowerCase().includes(searchQuery))
-      );
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">該当するフレーズがありません。</p>`;
+      if (vault.length === 0) {
+        container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">金庫にフレーズがありません。</p>`;
         return;
       }
 
-      container.innerHTML = filtered.map(item => `
-        <div class="bg-slate-950 border border-slate-800/90 rounded-xl p-4 flex justify-between items-start gap-3 shadow-md hover:border-slate-700 transition">
-          <div class="space-y-1.5 flex-1">
-            <div class="flex items-center gap-2">
-              <span class="text-[10px] bg-indigo-950 border border-indigo-800/60 text-indigo-300 font-semibold px-2 py-0.5 rounded">
-                ${item.cat || 'マイフレーズ'}
-              </span>
-            </div>
+      container.innerHTML = vault.map(item => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-between items-start gap-3 shadow-md">
+          <div class="space-y-1 flex-1">
+            <span class="text-[10px] bg-indigo-950 border border-indigo-800/60 text-indigo-300 font-semibold px-2 py-0.5 rounded">
+              ${item.cat || 'マイフレーズ'}
+            </span>
             <p class="text-xs text-slate-300 font-medium">${item.jp}</p>
             <p class="text-sm font-extrabold text-indigo-200 font-mono tracking-tight">${item.en}</p>
-            ${item.tip ? `<p class="text-[11px] text-slate-400 bg-slate-900/70 p-2 rounded-lg border border-slate-800/60 leading-relaxed">${item.tip}</p>` : ''}
+            ${item.tip ? `<p class="text-[11px] text-slate-400 mt-1 bg-slate-900/60 p-2 rounded border border-slate-800/60 leading-relaxed">${item.tip}</p>` : ''}
           </div>
           <div class="flex items-center gap-1 shrink-0">
-            <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-amber-400 p-2 rounded-lg hover:bg-slate-900 transition" title="音声再生">
+            <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-400 p-2 rounded-lg hover:bg-slate-900 transition">
               <i class="ph-bold ph-speaker-high text-base"></i>
             </button>
-            <button onclick="removePhrase('${item.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition" title="削除">
+            <button onclick="removePhrase('${item.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition">
               <i class="ph-bold ph-trash text-base"></i>
             </button>
           </div>
@@ -645,42 +576,50 @@
       `).join('');
     }
 
-    // JSON BATCH & FILE SYSTEM INTEGRATION
-    function openImportModal() {
-      document.getElementById('import-modal').classList.remove('hidden');
+    // JSON Helper Functions
+    function copyGeminiPrompt() {
+      const promptText = `今日の英語学習で出てきた重要フレーズを、アプリ登録用に以下のJSON形式の配列のみで出力してください。Markdownのjsonコードブロック形式で出力してください。
+
+[
+  {
+    "jp": "日本語の意図",
+    "en": "発射型英語フレーズ",
+    "cat": "カテゴリー名（例: 仕事の即答 / 意見主張 / 調整）",
+    "tip": "口に馴染ませるためのポイントや解説"
+  }
+]`;
+      navigator.clipboard.writeText(promptText);
+      alert("プロンプトをクリップボードにコピーしました！Geminiにそのまま送信してください。");
     }
 
-    function closeImportModal() {
-      document.getElementById('import-modal').classList.add('hidden');
-    }
-
-    function processJSONImport() {
-      const raw = document.getElementById('json-textarea').value.trim();
-      if (!raw) {
-        alert("JSONデータを貼り付けてください。");
-        return;
-      }
+    function importJSONFromInput() {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) return;
 
       try {
-        // Strip markdown fences if user copied from Gemini markdown code block
-        const cleanJson = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/, '');
-        const parsed = JSON.parse(cleanJson);
+        let cleanJSON = raw;
+        if (raw.includes('```json')) {
+          cleanJSON = raw.split('```json')[1].split('```')[0].trim();
+        } else if (raw.includes('```')) {
+          cleanJSON = raw.split('```')[1].split('```')[0].trim();
+        }
 
-        if (!Array.isArray(parsed)) {
-          alert("JSONデータは配列 `[...]` 形式である必要があります。");
+        const items = JSON.parse(cleanJSON);
+        if (!Array.isArray(items)) {
+          alert("JSONは配列形式 [...] で入力してください。");
           return;
         }
 
         let addedCount = 0;
-        parsed.forEach(item => {
+        items.forEach((item, index) => {
           if (item.jp && item.en) {
             const exists = vault.some(v => v.jp === item.jp);
             if (!exists) {
               vault.unshift({
-                id: "c_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+                id: "j_" + Date.now() + "_" + index,
                 jp: item.jp,
                 en: item.en,
-                cat: item.cat || "Geminiインポート",
+                cat: item.cat || "Gemini学習",
                 tip: item.tip || ""
               });
               addedCount++;
@@ -689,139 +628,30 @@
         });
 
         saveVault();
-        document.getElementById('json-textarea').value = "";
-        closeImportModal();
-        alert(`${addedCount} 件の新フレーズを一括インポートしました！`);
-      } catch (err) {
-        alert("JSONのパースに失敗しました。フォーマットを確認してください。\nエラー: " + err.message);
-      }
-    }
-
-    function copyCurrentVaultJSON() {
-      const exportData = vault.map(({ jp, en, cat, tip }) => ({ jp, en, cat, tip }));
-      const jsonStr = JSON.stringify(exportData, null, 2);
-      
-      copyToClipboard(jsonStr);
-      alert("現在の金庫データ(JSON)をクリップボードにコピーしました！");
-    }
-
-    function exportJSONFile() {
-      const exportData = vault.map(({ jp, en, cat, tip }) => ({ jp, en, cat, tip }));
-      const jsonStr = JSON.stringify(exportData, null, 2);
-      const blob = new Blob([jsonStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'phrases.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function openLocalFile() {
-      if ('showOpenFilePicker' in window) {
-        // Modern File System Access API
-        window.showOpenFilePicker({
-          types: [{
-            description: 'JSON Files',
-            accept: { 'application/json': ['.json'] }
-          }]
-        }).then(async ([handle]) => {
-          fileHandle = handle;
-          const file = await fileHandle.getFile();
-          const text = await file.text();
-          loadJSONText(text);
-          document.getElementById('file-sync-badge').classList.remove('hidden');
-          document.getElementById('file-sync-badge').classList.add('flex');
-          closeImportModal();
-          alert(`「${file.name}」と直接連携を開始しました！変更は自動保存されます。`);
-        }).catch(err => {
-          if (err.name !== 'AbortError') {
-            document.getElementById('file-input').click();
-          }
-        });
-      } else {
-        // Fallback for standard file input
-        document.getElementById('file-input').click();
-      }
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        loadJSONText(e.target.result);
-        closeImportModal();
-        alert(`「${file.name}」からフレーズを取り込みました！`);
-      };
-      reader.readAsText(file);
-    }
-
-    function loadJSONText(text) {
-      try {
-        const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
-          let count = 0;
-          parsed.forEach(item => {
-            if (item.jp && item.en) {
-              const exists = vault.some(v => v.jp === item.jp);
-              if (!exists) {
-                vault.unshift({
-                  id: "c_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-                  jp: item.jp,
-                  en: item.en,
-                  cat: item.cat || "ファイル連動",
-                  tip: item.tip || ""
-                });
-                count++;
-              }
-            }
-          });
-          saveVault();
-        }
+        document.getElementById('json-input').value = "";
+        alert(`${addedCount}件のフレーズをインポートしました！`);
       } catch (e) {
-        alert("ファイルの読み込みに失敗しました: " + e.message);
+        alert("JSONの読み込みに失敗しました。フォーマットを確認してください。");
       }
     }
 
-    async function saveToFileHandle() {
-      if (!fileHandle) return;
-      try {
-        const writable = await fileHandle.createWritable();
-        const exportData = vault.map(({ jp, en, cat, tip }) => ({ jp, en, cat, tip }));
-        await writable.write(JSON.stringify(exportData, null, 2));
-        await writable.close();
-      } catch (e) {
-        console.warn("ファイルへの書き込みに失敗しました", e);
-      }
+    function fillCurrentJSON() {
+      document.getElementById('json-input').value = JSON.stringify(vault, null, 2);
     }
 
-    function copyGeminiPrompt() {
-      const promptText = document.getElementById('gemini-prompt-text').innerText;
-      copyToClipboard(promptText);
-      alert("Gemini用プロンプトをクリップボードにコピーしました！\nGeminiのチャット欄に貼り付けてご使用ください。");
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vault, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "phrases.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
-    function copyToClipboard(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
-    }
-
-    window.onload = function() {
-      updateVaultUI();
-      nextPrompt();
-    };
+    // Initial Load
+    updateVaultUI();
+    nextPrompt();
   </script>
 </body>
 </html>
