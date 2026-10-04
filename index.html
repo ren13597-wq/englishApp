@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2-Week English Phrase & Sparring Trainer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .flash-border { animation: flash 0.5s ease-in-out infinite alternate; }
+    @keyframes flash { from { border-color: #ef4444; } to { border-color: #3b82f6; } }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-12">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white p-2 rounded-xl">
+          <i class="ph-bold ph-lightning text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-tight">English Sparring & Phrase Vault</h1>
+          <p class="text-xs text-slate-400">2週間の無意識・即応回路構築プログラム</p>
+        </div>
+      </div>
+      <div class="flex gap-2 text-xs">
+        <span class="bg-indigo-950 text-indigo-400 border border-indigo-800/50 px-3 py-1.5 rounded-full font-medium">1日3分・口の筋肉記憶</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-6 pt-8 space-y-8">
+
+    <!-- Tab Navigation -->
+    <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+      <button id="tab-sparring-btn" onclick="switchTab('sparring')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+        <i class="ph-bold ph-sword text-lg"></i>
+        瞬間スパーリング（3秒即応）
+      </button>
+      <button id="tab-vault-btn" onclick="switchTab('vault')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
+        <i class="ph-bold ph-database text-lg"></i>
+        フレーズ金庫（Stock）
+        <span id="vault-count-badge" class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full">0</span>
+      </button>
+    </div>
+
+    <!-- SPARRING TAB -->
+    <section id="tab-sparring" class="space-y-6">
+      
+      <!-- Card Area -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-8 relative overflow-hidden shadow-2xl">
+        <div class="flex justify-between items-start mb-6">
+          <span id="category-badge" class="bg-indigo-900/50 text-indigo-300 border border-indigo-700/50 text-xs font-semibold px-3 py-1 rounded-md">
+            カテゴリーを選択してください
+          </span>
+          <div id="streak-counter" class="text-xs text-amber-400 flex items-center gap-1 font-semibold">
+            <i class="ph-fill ph-fire text-amber-500 text-base"></i>
+            完了: <span id="done-count">0</span>回
+          </div>
+        </div>
+
+        <!-- Prompt Question -->
+        <div class="min-h-[120px] flex flex-col justify-center">
+          <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">日本語の意図（瞬時に英語に変換せよ）</p>
+          <h2 id="prompt-jp" class="text-2xl font-bold text-slate-100 leading-snug">
+            「スタート」ボタンを押してスパーリングを開始してください。
+          </h2>
+        </div>
+
+        <!-- Model Answer (Hidden by default) -->
+        <div id="answer-box" class="mt-6 pt-6 border-t border-slate-800/80 hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+              <i class="ph-bold ph-check-circle"></i> 発射型テンプレート（型）
+            </span>
+            <button onclick="speakCurrentAnswer()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold">
+              <i class="ph-bold ph-speaker-high text-base"></i> 発音を聞く
+            </button>
+          </div>
+          <p id="prompt-en" class="text-xl font-extrabold text-indigo-200 font-mono tracking-tight"></p>
+          <p id="prompt-tip" class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-lg border border-slate-800/80 leading-relaxed"></p>
+        </div>
+
+        <!-- Controls -->
+        <div class="mt-8 flex flex-wrap gap-4 items-center justify-between">
+          <button id="next-btn" onclick="nextPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-indigo-600/30">
+            <i class="ph-bold ph-play"></i> 次のお題を開始する
+          </button>
+          <button id="reveal-btn" onclick="revealAnswer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-3.5 rounded-xl transition text-sm hidden">
+            答えと「型」を確認する
+          </button>
+          <button id="add-to-vault-btn" onclick="addCurrentToVault()" class="border border-amber-500/40 text-amber-400 hover:bg-amber-950/30 font-semibold px-4 py-3.5 rounded-xl transition text-xs flex items-center gap-1.5 hidden">
+            <i class="ph-bold ph-star"></i> このフレーズをストックに追加
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Rule Card -->
+      <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 text-xs text-slate-400 space-y-2">
+        <p class="font-bold text-slate-300 flex items-center gap-1.5 text-sm">
+          <i class="ph-bold ph-info text-indigo-400"></i> スパーリングの鉄則ルール
+        </p>
+        <ul class="list-disc list-inside space-y-1 pl-1 text-slate-400">
+          <li>正解の英文をひらめく必要はありません。**3秒以内に何か声に出し始めること**が目的です。</li>
+          <li>声に出したらすぐに答えを開き、**滑らかに言えるスピードで3回口に出して**終了します。</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- VAULT TAB -->
+    <section id="tab-vault" class="space-y-6 hidden">
+      
+      <!-- Custom Add Form -->
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+          <i class="ph-bold ph-plus-circle text-indigo-400 text-base"></i>
+          自分が日常・仕事で言った日本語をフレーズ化して登録する
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input id="input-jp" type="text" placeholder="例: 一旦確認して折り返します" class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          <input id="input-en" type="text" placeholder="例: Let me double-check and get back to you." class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+        </div>
+        <button onclick="addCustomPhrase()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition flex items-center gap-2">
+          <i class="ph-bold ph-floppy-disk"></i> 金庫に保存する
+        </button>
+      </div>
+
+      <!-- Vault List -->
+      <div id="vault-list" class="space-y-3">
+        <!-- Dynamic content -->
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Initial Stock Prompts (High-frequency business/daily triggers)
+    const initialPrompts = [
+      {
+        id: "p1",
+        jp: "あ、それ確認して後で折り返しますね。",
+        en: "Let me double-check and get back to you.",
+        cat: "仕事の即答",
+        tip: "『確認する』は check よりも『Let me double-check...』を型として先頭に置くと会話がスムーズになります。"
+      },
+      {
+        id: "p2",
+        jp: "言いたいことは分かりますが、別の見方をすると…",
+        en: "That makes sense, but looking at it another way...",
+        cat: "クッション言葉",
+        tip: "相手の主張を殺さずに反対意見を出す万能の接続フレーズです。"
+      },
+      {
+        id: "p3",
+        jp: "〜の件って今どんな進捗状況ですか？",
+        en: "Where are we on this project?",
+        cat: "状況確認",
+        tip: "What is the status... よりも『Where are we on...』が非常に自然で口に出しやすい型です。"
+      },
+      {
+        id: "p4",
+        jp: "念のためですが、スケジュールに遅れは出ていませんか？",
+        en: "Just to be safe, are we on schedule?",
+        cat: "事前確認",
+        tip: "『念のため』は『Just to be safe...』または『Just to make sure...』で即発射します。"
+      },
+      {
+        id: "p5",
+        jp: "集中力が切れてきたので、一旦少し散歩してきます。",
+        en: "I'm losing focus, so I'll take a quick break.",
+        cat: "日常・自己描写",
+        tip: "『〜なので』の so で文を繋ぐ練習。単文で切らず理由と行動をセットにします。"
+      }
+    ];
+
+    let currentPrompt = null;
+    let doneCount = 0;
+    let vault = JSON.parse(localStorage.getItem('english_vault')) || initialPrompts;
+
+    function saveVault() {
+      localStorage.setItem('english_vault', JSON.stringify(vault));
+      updateVaultUI();
+    }
+
+    function switchTab(tab) {
+      const sparringTab = document.getElementById('tab-sparring');
+      const vaultTab = document.getElementById('tab-vault');
+      const sparringBtn = document.getElementById('tab-sparring-btn');
+      const vaultBtn = document.getElementById('tab-vault-btn');
+
+      if (tab === 'sparring') {
+        sparringTab.classList.remove('hidden');
+        vaultTab.classList.add('hidden');
+        sparringBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
+        vaultBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
+      } else {
+        sparringTab.classList.add('hidden');
+        vaultTab.classList.remove('hidden');
+        vaultBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
+        sparringBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
+      }
+    }
+
+    function nextPrompt() {
+      const randomIndex = Math.floor(Math.random() * vault.length);
+      currentPrompt = vault[randomIndex];
+
+      document.getElementById('category-badge').innerText = currentPrompt.cat || "カスタムフレーズ";
+      document.getElementById('prompt-jp').innerText = currentPrompt.jp;
+      document.getElementById('prompt-en').innerText = currentPrompt.en;
+      document.getElementById('prompt-tip').innerText = currentPrompt.tip || "口に馴染むまで3回声に出してみましょう。";
+
+      document.getElementById('answer-box').classList.add('hidden');
+      document.getElementById('reveal-btn').classList.remove('hidden');
+      document.getElementById('add-to-vault-btn').classList.add('hidden');
+      document.getElementById('next-btn').innerText = "次のお題へ";
+    }
+
+    function revealAnswer() {
+      if (!currentPrompt) return;
+      document.getElementById('answer-box').classList.remove('hidden');
+      document.getElementById('reveal-btn').classList.add('hidden');
+
+      // Check if already in vault
+      const exists = vault.some(item => item.en === currentPrompt.en);
+      if (!exists) {
+        document.getElementById('add-to-vault-btn').classList.remove('hidden');
+      }
+
+      doneCount++;
+      document.getElementById('done-count').innerText = doneCount;
+      speakCurrentAnswer();
+    }
+
+    function speakCurrentAnswer() {
+      if (!currentPrompt) return;
+      const utterance = new SpeechSynthesisUtterance(currentPrompt.en);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function speakText(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function addCustomPhrase() {
+      const jp = document.getElementById('input-jp').value.trim();
+      const en = document.getElementById('input-en').value.trim();
+
+      if (!jp || !en) {
+        alert("日本語と英語の両方を入力してください。");
+        return;
+      }
+
+      const newItem = {
+        id: "c_" + Date.now(),
+        jp: jp,
+        en: en,
+        cat: "マイフレーズ",
+        tip: "自分が日常でよく使う言葉から登録したフレーズです。"
+      };
+
+      vault.unshift(newItem);
+      saveVault();
+
+      document.getElementById('input-jp').value = "";
+      document.getElementById('input-en').value = "";
+      alert("金庫に追加しました！");
+    }
+
+    function removePhrase(id) {
+      vault = vault.filter(item => item.id !== id);
+      saveVault();
+    }
+
+    function updateVaultUI() {
+      const container = document.getElementById('vault-list');
+      document.getElementById('vault-count-badge').innerText = vault.length;
+
+      if (vault.length === 0) {
+        container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">ストックされているフレーズがありません。</p>`;
+        return;
+      }
+
+      container.innerHTML = vault.map(item => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-between items-start gap-4">
+          <div class="space-y-1">
+            <span class="text-[10px] bg-slate-900 border border-slate-800 text-indigo-400 font-semibold px-2 py-0.5 rounded">
+              ${item.cat || 'マイフレーズ'}
+            </span>
+            <p class="text-xs text-slate-400">${item.jp}</p>
+            <p class="text-sm font-bold text-indigo-200 font-mono">${item.en}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-400 p-2 rounded-lg hover:bg-slate-900 transition">
+              <i class="ph-bold ph-speaker-high text-base"></i>
+            </button>
+            <button onclick="removePhrase('${item.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition">
+              <i class="ph-bold ph-trash text-base"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize
+    updateVaultUI();
+  </script>
+</body>
+</html>
