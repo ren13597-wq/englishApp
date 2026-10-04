@@ -1,0 +1,23 @@
+[
+  {
+    "id": "p1",
+    "jp": "あ、それ確認して後で折り返しますね。",
+    "en": "Let me double-check and get back to you.",
+    "cat": "仕事の即答",
+    "tip": "『確認する』は check よりも『Let me double-check...』を型として先頭に置くと会話がスムーズになります。"
+  },
+  {
+    "id": "p2",
+    "jp": "言いたいことは分かりますが、別の見方をすると…",
+    "en": "That makes sense, but looking at it another way...",
+    "cat": "クッション言葉",
+    "tip": "相手の主張を殺さずに反対意見を出す万能の接続フレーズです。"
+  },
+  {
+    "id": "p3",
+    "jp": "〜の件って今どんな進捗状況ですか？",
+    "en": "Where are we on this project?",
+    "cat": "状況確認",
+    "tip": "Where are we on... が非常に自然で口に出しやすい型です。"
+  }
+]
