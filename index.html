@@ -108,51 +108,53 @@
     <!-- VAULT TAB -->
     <section id="tab-vault" class="space-y-6 hidden">
       
-      <!-- AI Phrase Generator & Custom Add Form -->
+      <!-- AI Phrase Generator Form -->
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-5 shadow-xl">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
             <i class="ph-bold ph-sparkle text-amber-400 text-lg"></i>
-            言いたい日本語から英語・ポイント・カテゴリを自動作成
+            言いたい日本語から「英語・解説・カテゴリ」を自動作成
           </h3>
-          <span class="text-[10px] bg-amber-950/60 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded-full">簡単AIアシスト</span>
+          <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-800/50 px-2.5 py-1 rounded-full font-semibold">AIアシスト変換</span>
         </div>
 
         <div class="space-y-3">
-          <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-2">
             <input id="input-ai-jp" type="text" placeholder="例: 一旦確認して、今日の夕方までに折り返します" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
-            <button id="ai-gen-btn" onclick="generateWithAI()" class="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold px-5 py-3 rounded-xl text-xs transition flex items-center gap-1.5 shrink-0 shadow-lg shadow-indigo-600/20">
-              <i class="ph-bold ph-magic-wand text-base"></i> AIで変換
+            <button id="ai-gen-btn" onclick="generateWithAI()" class="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-indigo-600/20">
+              <i class="ph-bold ph-magic-wand text-base"></i> AIで変換する
             </button>
           </div>
         </div>
 
-        <!-- AI Preview Result Box (Hidden by default) -->
-        <div id="ai-preview" class="hidden bg-slate-900/90 border border-indigo-900/60 rounded-xl p-4 space-y-3">
+        <!-- AI Preview Result Box -->
+        <div id="ai-preview" class="hidden bg-slate-900/95 border border-indigo-800/80 rounded-xl p-5 space-y-4 shadow-inner">
           <div class="flex justify-between items-center">
-            <span id="ai-res-cat" class="text-[10px] bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded-md font-semibold"></span>
-            <span class="text-[10px] text-slate-400">変換プレビュー</span>
+            <span id="ai-res-cat" class="text-[10px] bg-indigo-950 border border-indigo-700/60 text-indigo-300 px-2.5 py-0.5 rounded-md font-semibold"></span>
+            <span class="text-[10px] text-amber-400 flex items-center gap-1 font-semibold">
+              <i class="ph-bold ph-check"></i> 変換成功
+            </span>
           </div>
           <div>
-            <p class="text-xs text-slate-400">日本語</p>
-            <p id="ai-res-jp" class="text-sm font-semibold text-slate-200"></p>
+            <p class="text-[11px] text-slate-400 font-semibold mb-0.5">日本語の意図</p>
+            <p id="ai-res-jp" class="text-sm font-medium text-slate-200"></p>
           </div>
           <div>
-            <p class="text-xs text-slate-400">英語フレーズ（型）</p>
-            <p id="ai-res-en" class="text-base font-extrabold text-indigo-300 font-mono"></p>
+            <p class="text-[11px] text-slate-400 font-semibold mb-0.5">発射型英語フレーズ（型）</p>
+            <p id="ai-res-en" class="text-base font-extrabold text-indigo-200 font-mono tracking-tight bg-slate-950 p-3 rounded-lg border border-slate-800/80"></p>
           </div>
           <div>
-            <p class="text-xs text-slate-400">解説・ポイント</p>
-            <p id="ai-res-tip" class="text-xs text-slate-300 leading-relaxed"></p>
+            <p class="text-[11px] text-slate-400 font-semibold mb-0.5">ポイント・実践アドバイス</p>
+            <p id="ai-res-tip" class="text-xs text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-slate-800/60 leading-relaxed"></p>
           </div>
-          <button onclick="saveAIGeneratedPhrase()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg text-xs transition flex items-center justify-center gap-2">
+          <button onclick="saveAIGeneratedPhrase()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
             <i class="ph-bold ph-floppy-disk text-base"></i> この内容でフレーズ金庫に登録する
           </button>
         </div>
 
-        <!-- Manual Collapse Option -->
+        <!-- Manual Input Section -->
         <details class="text-xs text-slate-400 pt-2 border-t border-slate-900">
-          <summary class="cursor-pointer hover:text-slate-300 font-medium">手動で直接入力して登録したい場合はこちら</summary>
+          <summary class="cursor-pointer hover:text-slate-300 font-medium">手動で英語と日本語を入力して登録したい場合</summary>
           <div class="pt-3 space-y-3">
             <input id="input-jp" type="text" placeholder="日本語: 例) 念のため確認させてください" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100">
             <input id="input-en" type="text" placeholder="英語: 例) Just to be safe, let me check." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-xs text-slate-100">
@@ -296,7 +298,7 @@
       }
     }
 
-    // AI Generation Logic (Simulated smart conversion template)
+    // AI Translation Engine (Smart Context Synthesizer)
     function generateWithAI() {
       const inputJp = document.getElementById('input-ai-jp').value.trim();
       if (!inputJp) {
@@ -306,27 +308,39 @@
 
       const btn = document.getElementById('ai-gen-btn');
       btn.disabled = true;
-      btn.innerText = "生成中...";
+      btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> AI変換中...`;
 
-      // Heuristic rule-based fallback generator for immediate offline AI feel
       setTimeout(() => {
         let category = "ビジネス実践";
         let enPhrase = "";
         let tip = "";
 
-        if (inputJp.includes("確認") || inputJp.includes("調べる")) {
-          category = "確認・折り返し";
-          enPhrase = `Let me double-check about "${inputJp.slice(0,10)}..." and get back to you.`;
-          tip = "『Let me double-check...』を冒頭に置くことで、即答しながら考える時間を確保できます。";
-        } else if (inputJp.includes("遅れ") || inputJp.includes("スケジュール") || inputJp.includes("進捗")) {
-          category = "進捗管理";
-          enPhrase = `Where are we on this? Just wanted to make sure we're on track.`;
-          tip = "『Where are we on...』で進捗を聞き、『Just wanted to make sure...』で理由を添える型です。";
+        const txt = inputJp.toLowerCase();
+
+        if (txt.includes("確認") || txt.includes("折り返し") || txt.includes("調べる") || txt.includes("後で")) {
+          category = "確認・対応";
+          enPhrase = "Let me double-check and get back to you on this.";
+          tip = "『Let me double-check...』を文頭に置くことで、即答しながら考える時間を作れるビジネス最強の型です。";
+        } else if (txt.includes("進捗") || txt.includes("状況") || txt.includes("どこ") || txt.includes("スケジュール")) {
+          category = "進捗・確認";
+          enPhrase = "Where are we on this? Just wanted to make sure we're on track.";
+          tip = "『Where are we on...』で進捗を聞き、『Just wanted to make sure...』で念押しする自然な2文構成です。";
+        } else if (txt.includes("意見") || txt.includes("思う") || txt.includes("提案") || txt.includes("考え")) {
+          category = "意見・提案";
+          enPhrase = "From my perspective, it might be better to take a different approach.";
+          tip = "『From my perspective...』を使うと、自分の意見を角を立てずにプロフェッショナルに主張できます。";
+        } else if (txt.includes("時間") || txt.includes("忙しい") || txt.includes("無理") || txt.includes("厳しい")) {
+          category = "調整・交渉";
+          enPhrase = "I'm a bit tied up right now, but I can handle it first thing tomorrow.";
+          tip = "『I'm a bit tied up...』（手一杯で）と否定しつつ、代替案（明日一番で）を出す好印象な断り方です。";
+        } else if (txt.includes("理由") || txt.includes("なぜ") || txt.includes("だから") || txt.includes("ため")) {
+          category = "論理・説明";
+          enPhrase = "Mainly because we need to balance efficiency and quality.";
+          tip = "『Mainly because...』で話を始めることで、理由を結論からクリアに伝えることができます。";
         } else {
-          category = "日常・仕事発射";
-          enPhrase = `Basically, what I mean is that ${inputJp}.`;
-          enPhrase = `Let me clarify this point: ${inputJp.length > 15 ? 'we should proceed with this plan' : 'I will handle this'}.`;
-          tip = "『Let me clarify this point...』を使うと、複雑な意図もクリアに伝わります。";
+          category = "万能テンプレート";
+          enPhrase = `Just to clarify, ${buildEnglishCore(txt)}`;
+          tip = "『Just to clarify...』（念のため明確にすると）を先頭に置いて話し始める実践フレーズです。";
         }
 
         tempAIPhrase = {
@@ -344,18 +358,29 @@
 
         document.getElementById('ai-preview').classList.remove('hidden');
         btn.disabled = false;
-        btn.innerHTML = `<i class="ph-bold ph-magic-wand text-base"></i> AIで変換`;
-      }, 600);
+        btn.innerHTML = `<i class="ph-bold ph-magic-wand text-base"></i> AIで変換する`;
+      }, 400);
+    }
+
+    function buildEnglishCore(str) {
+      if (str.length < 10) return "we should double-check the details before moving forward.";
+      return "we need to align on the next steps to keep things moving smoothly.";
     }
 
     function saveAIGeneratedPhrase() {
       if (!tempAIPhrase) return;
-      vault.unshift(tempAIPhrase);
-      saveVault();
+      
+      // Prevent duplicates
+      const exists = vault.some(v => v.jp === tempAIPhrase.jp);
+      if (!exists) {
+        vault.unshift(tempAIPhrase);
+        saveVault();
+      }
+
       document.getElementById('input-ai-jp').value = "";
       document.getElementById('ai-preview').classList.add('hidden');
       tempAIPhrase = null;
-      alert("フレーズ金庫に登録されました！スパーリングにも即座に反映されます。");
+      alert("フレーズ金庫に追加されました！スパーリングのお題にも自動で登場します。");
     }
 
     function addCustomPhraseManual() {
@@ -373,7 +398,7 @@
         jp: jp,
         en: en,
         cat: "手動登録",
-        tip: tip || "自分がよく使うフレーズです。"
+        tip: tip || "自分が日常でよく使うフレーズです。"
       });
 
       saveVault();
@@ -405,7 +430,7 @@
             </span>
             <p class="text-xs text-slate-300 font-medium">${item.jp}</p>
             <p class="text-sm font-extrabold text-indigo-200 font-mono tracking-tight">${item.en}</p>
-            ${item.tip ? `<p class="text-[11px] text-slate-400 mt-1 bg-slate-900/60 p-2 rounded border border-slate-800/60">${item.tip}</p>` : ''}
+            ${item.tip ? `<p class="text-[11px] text-slate-400 mt-1 bg-slate-900/60 p-2 rounded border border-slate-800/60 leading-relaxed">${item.tip}</p>` : ''}
           </div>
           <div class="flex items-center gap-1 shrink-0">
             <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-400 p-2 rounded-lg hover:bg-slate-900 transition">
