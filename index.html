@@ -1,320 +1,647 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2-Week English Phrase & Sparring Trainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2-Week English Phrase Stock & Sparring Trainer</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .flash-border { animation: flash 0.5s ease-in-out infinite alternate; }
-    @keyframes flash { from { border-color: #ef4444; } to { border-color: #3b82f6; } }
+    /* Custom Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    /* Smooth transition for circular timer */
+    .timer-ring {
+      transition: stroke-dashoffset 0.1s linear;
+    }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen pb-12">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950">
 
-  <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="bg-indigo-600 text-white p-2 rounded-xl">
-          <i class="ph-bold ph-lightning text-xl"></i>
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
+          <i class="ph-bold ph-lightning text-2xl"></i>
         </div>
         <div>
-          <h1 class="font-extrabold text-lg tracking-tight">English Sparring & Phrase Vault</h1>
-          <p class="text-xs text-slate-400">2週間の無意識・即応回路構築プログラム</p>
+          <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            Phrase Sparring
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">2-Week Trainer</span>
+          </h1>
+          <p class="text-xs text-slate-400 hidden sm:block">反射的に英語が出る脳回路を作る即応訓練</p>
         </div>
       </div>
-      <div class="flex gap-2 text-xs">
-        <span class="bg-indigo-950 text-indigo-400 border border-indigo-800/50 px-3 py-1.5 rounded-full font-medium">1日3分・口の筋肉記憶</span>
+
+      <div class="flex items-center gap-2 text-xs">
+        <div class="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
+          <i class="ph-fill ph-check-circle text-emerald-400 text-sm"></i>
+          <span class="text-slate-400 hidden xs:inline">完了:</span>
+          <span id="header-done-count" class="text-emerald-400 font-bold">0 回</span>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="max-w-4xl mx-auto px-6 pt-8 space-y-8">
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
 
-    <!-- Tab Navigation -->
-    <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-      <button id="tab-sparring-btn" onclick="switchTab('sparring')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
-        <i class="ph-bold ph-sword text-lg"></i>
-        瞬間スパーリング（3秒即応）
+    <!-- Navigation Tabs (3 Main Tabs) -->
+    <div class="flex bg-slate-900 p-1.5 rounded-2xl border border-slate-800 text-xs sm:text-sm">
+      <button id="nav-sparring" onclick="switchTab('sparring')" class="flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/10">
+        <i class="ph-bold ph-sword text-base sm:text-lg"></i>
+        3秒即応スパーリング
       </button>
-      <button id="tab-vault-btn" onclick="switchTab('vault')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
-        <i class="ph-bold ph-database text-lg"></i>
-        フレーズ金庫（Stock）
-        <span id="vault-count-badge" class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full">0</span>
+      <button id="nav-vault" onclick="switchTab('vault')" class="flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50">
+        <i class="ph-bold ph-database text-base sm:text-lg"></i>
+        フレーズ金庫 (<span id="tab-vault-count">0</span>)
+      </button>
+      <button id="nav-guide" onclick="switchTab('guide')" class="flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50">
+        <i class="ph-bold ph-book-open text-base sm:text-lg"></i>
+        使い方・ワークフロー
       </button>
     </div>
 
-    <!-- SPARRING TAB -->
-    <section id="tab-sparring" class="space-y-6">
-      
-      <!-- Card Area -->
-      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-8 relative overflow-hidden shadow-2xl">
-        <div class="flex justify-between items-start mb-6">
-          <span id="category-badge" class="bg-indigo-900/50 text-indigo-300 border border-indigo-700/50 text-xs font-semibold px-3 py-1 rounded-md">
-            カテゴリーを選択してください
+    <section id="view-sparring" class="flex-1 flex flex-col gap-4">
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[420px] shadow-xl">
+        
+        <!-- Ambient Glow Effects -->
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Top Badge Bar -->
+        <div class="flex items-center justify-between w-full mb-4">
+          <span id="drill-category-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            カテゴリー
           </span>
-          <div id="streak-counter" class="text-xs text-amber-400 flex items-center gap-1 font-semibold">
-            <i class="ph-fill ph-fire text-amber-500 text-base"></i>
-            完了: <span id="done-count">0</span>回
-          </div>
+          <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
+            <i class="ph-bold ph-clock"></i> 3秒発射ルール
+          </span>
         </div>
 
-        <!-- Prompt Question -->
-        <div class="min-h-[120px] flex flex-col justify-center">
-          <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">日本語の意図（瞬時に英語に変換せよ）</p>
-          <h2 id="prompt-jp" class="text-2xl font-bold text-slate-100 leading-snug">
-            「スタート」ボタンを押してスパーリングを開始してください。
+        <!-- Japanese Prompt Display -->
+        <div class="my-auto max-w-2xl w-full py-4">
+          <p class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">日本語の意図 (瞬時に英語へ変換)</p>
+          <h2 id="drill-ja-prompt" class="text-xl sm:text-2xl font-bold text-white leading-snug">
+            「次のお題」ボタンを押してスパーリングを開始してください。
           </h2>
         </div>
 
-        <!-- Model Answer (Hidden by default) -->
-        <div id="answer-box" class="mt-6 pt-6 border-t border-slate-800/80 hidden space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-              <i class="ph-bold ph-check-circle"></i> 発射型テンプレート（型）
-            </span>
-            <button onclick="speakCurrentAnswer()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold">
-              <i class="ph-bold ph-speaker-high text-base"></i> 発音を聞く
-            </button>
+        <!-- Timer & Answer Display -->
+        <div class="w-full my-4 flex flex-col items-center">
+          <!-- Circular Countdown Timer -->
+          <div class="relative w-20 h-20 flex items-center justify-center my-2">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+              <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+              <path id="timer-ring-path" class="text-emerald-500 timer-ring" stroke-dasharray="100, 100" stroke-dashoffset="0" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            </svg>
+            <span id="timer-display" class="absolute text-xl font-extrabold text-white">3s</span>
           </div>
-          <p id="prompt-en" class="text-xl font-extrabold text-indigo-200 font-mono tracking-tight"></p>
-          <p id="prompt-tip" class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-lg border border-slate-800/80 leading-relaxed"></p>
+
+          <!-- Answer & Model Phrase Box -->
+          <div id="target-phrase-box" class="w-full max-w-2xl bg-slate-950/90 border border-slate-800 rounded-xl p-5 mt-4 text-center transition-all duration-300 opacity-20 filter blur-md select-none">
+            <div class="flex items-center justify-center gap-3">
+              <p id="drill-en-phrase" class="text-lg sm:text-xl font-bold text-emerald-300 tracking-wide font-mono"></p>
+              <button onclick="speakCurrentPhrase()" class="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-colors" title="音声を再生">
+                <i class="ph-bold ph-speaker-high text-xl"></i>
+              </button>
+            </div>
+            <p id="drill-notes" class="text-xs text-slate-400 mt-2 italic"></p>
+          </div>
         </div>
 
-        <!-- Controls -->
-        <div class="mt-8 flex flex-wrap gap-4 items-center justify-between">
-          <button id="next-btn" onclick="nextPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-indigo-600/30">
-            <i class="ph-bold ph-play"></i> 次のお題を開始する
+        <!-- Action Controls -->
+        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
+          <button id="start-btn" onclick="startCountdown()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+            <i class="ph-bold ph-play text-lg"></i> タイマー起動 (3秒スタート)
           </button>
-          <button id="reveal-btn" onclick="revealAnswer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-3.5 rounded-xl transition text-sm hidden">
-            答えと「型」を確認する
+          <button id="reveal-btn" onclick="revealAnswer()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center justify-center gap-2 transition-all border border-slate-700">
+            <i class="ph-bold ph-eye text-lg"></i> 答え・型を確認する
           </button>
-          <button id="add-to-vault-btn" onclick="addCurrentToVault()" class="border border-amber-500/40 text-amber-400 hover:bg-amber-950/30 font-semibold px-4 py-3.5 rounded-xl transition text-xs flex items-center gap-1.5 hidden">
-            <i class="ph-bold ph-star"></i> このフレーズをストックに追加
+          <button onclick="nextSparringPrompt()" class="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-medium flex items-center justify-center gap-2 border border-slate-800 transition-all">
+            次のお題 <i class="ph-bold ph-arrow-right"></i>
           </button>
         </div>
+
       </div>
 
-      <!-- Quick Rule Card -->
-      <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 text-xs text-slate-400 space-y-2">
-        <p class="font-bold text-slate-300 flex items-center gap-1.5 text-sm">
-          <i class="ph-bold ph-info text-indigo-400"></i> スパーリングの鉄則ルール
+      <!-- Quick Guidance Footer -->
+      <div class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 text-xs text-slate-400 space-y-1">
+        <p class="font-bold text-slate-300 flex items-center gap-1.5">
+          <i class="ph-bold ph-info text-emerald-400"></i> スパーリングの鉄則
         </p>
-        <ul class="list-disc list-inside space-y-1 pl-1 text-slate-400">
-          <li>正解の英文をひらめく必要はありません。**3秒以内に何か声に出し始めること**が目的です。</li>
-          <li>声に出したらすぐに答えを開き、**滑らかに言えるスピードで3回口に出して**終了します。</li>
-        </ul>
+        <p>完璧な英文を考える必要はありません。**3秒以内に知っている単語で発声を開始すること**が回路を作るキーです。確認後は3回音読して筋肉に記憶させてください。</p>
       </div>
-
     </section>
 
-    <!-- VAULT TAB -->
-    <section id="tab-vault" class="space-y-6 hidden">
+    <section id="view-vault" class="hidden flex-1 flex-col gap-6">
       
-      <!-- Custom Add Form -->
-      <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 space-y-4">
-        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-          <i class="ph-bold ph-plus-circle text-indigo-400 text-base"></i>
-          自分が日常・仕事で言った日本語をフレーズ化して登録する
+      <!-- Custom Phrase Add Form -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="ph-bold ph-plus-circle text-emerald-400 text-lg"></i>
+          自分の日常・ビジネス言葉をフレーズ化してストック
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input id="input-jp" type="text" placeholder="例: 一旦確認して折り返します" class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
-          <input id="input-en" type="text" placeholder="例: Let me double-check and get back to you." class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
-        </div>
-        <button onclick="addCustomPhrase()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition flex items-center gap-2">
-          <i class="ph-bold ph-floppy-disk"></i> 金庫に保存する
-        </button>
+        <form onsubmit="handleCustomPhraseSubmit(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">日本語の引き金 (例: 「確認して折り返します」と言う時)</label>
+              <input type="text" id="input-ja" required placeholder="例: 「確認して折り返します」と言う時" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">英語フレーズ (発射する型)</label>
+              <input type="text" id="input-en" required placeholder="例: Let me double-check that and get back to you." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-emerald-300 font-mono placeholder-slate-600 focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">カテゴリー</label>
+              <select id="input-category" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-emerald-500">
+                <option value="意思表明">意思表明</option>
+                <option value="進捗確認・報告">進捗確認・報告</option>
+                <option value="意見・反論のバッファー">意見・反論のバッファー</option>
+                <option value="推進・指示">推進・指示</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">ワンポイントメモ</label>
+              <input type="text" id="input-notes" placeholder="例: Let me... の塊で発射する" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-emerald-500/20">
+              <i class="ph-bold ph-floppy-disk text-base"></i> 金庫に保存する
+            </button>
+          </div>
+        </form>
       </div>
 
-      <!-- Vault List -->
-      <div id="vault-list" class="space-y-3">
-        <!-- Dynamic content -->
+      <!-- Phrase Search & Filter -->
+      <div class="flex items-center justify-between gap-3 bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+        <div class="relative flex-1">
+          <i class="ph-bold ph-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
+          <input type="text" id="vault-search" oninput="renderVault()" placeholder="日本語・英語フレーズで検索..." class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500">
+        </div>
       </div>
+
+      <!-- Phrase Cards Grid -->
+      <div id="vault-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Populated via JavaScript -->
+      </div>
+    </section>
+
+    <section id="view-guide" class="hidden flex-1 flex-col gap-8">
+      
+      <!-- Hero Overview Banner -->
+      <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+          <i class="ph-bold ph-compass"></i> メソドロジー & ワークフロー
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white leading-relaxed">
+          意志の力に頼らず「反射」で英語を叩き出す 2週間プログラム
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          このツールは、単なる暗記アプリではありません。日常の「言いたい日本語」と「英語の型（Chunk）」をダイレクトに直結させ、**思考のパウズ（溜め）なしで3秒以内に声を出す筋肉回路を作るスパーリング機器**です。
+        </p>
+      </div>
+
+      <!-- Core Method Principles (3 Pillars) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-lg">
+            01
+          </div>
+          <h3 class="text-sm font-bold text-white">3秒ルール（無意識化）</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            頭の中で文法を組み立てる時間を遮断します。3秒以内に何か英語を発声し始め、「考える前に口が動く」状態を作ります。
+          </p>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-lg">
+            02
+          </div>
+          <h3 class="text-sm font-bold text-white">「発射の型」を固める</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            単語単位ではなく <code class="text-emerald-300 bg-slate-950 px-1 py-0.5 rounded">Let me double-check...</code> のような先頭の3〜4単語の塊でインストールし、一気に射出します。
+          </p>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-lg">
+            03
+          </div>
+          <h3 class="text-sm font-bold text-white">1日3分×口の筋肉記憶</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            机に向かって勉強する必要はありません。正解を確認したら**滑らかに言える速度で3回音読**してストックするだけで完了です。
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Step-by-Step Daily Workflow -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+        <h3 class="text-base font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
+          <i class="ph-bold ph-arrows-clockwise text-emerald-400 text-xl"></i>
+          デイリー練習ワークフロー（1日3〜5分のルーティン）
+        </h3>
+
+        <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-800">
+          
+          <!-- Step 1 -->
+          <div class="relative flex gap-4 items-start">
+            <div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 z-10 shadow-md shadow-emerald-500/20">
+              1
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-sm font-bold text-white">「3秒即応スパーリング」を開く</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                「次のお題」を押して日本語のお題（感情・意図）を表示させ、「タイマー起動」をクリックします。
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="relative flex gap-4 items-start">
+            <div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 z-10 shadow-md shadow-emerald-500/20">
+              2
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-sm font-bold text-white">3秒カウントダウン内に英語で声に出す</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                正確な文法は無視してください。単語1つでも、知っている先頭フレーズでも良いので声に出して口を動かします。
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="relative flex gap-4 items-start">
+            <div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 z-10 shadow-md shadow-emerald-500/20">
+              3
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-sm font-bold text-white">型（モデル英文）を確認し、3回口に出す</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                自動再生されるネイティブ音声を聞きながら、滑らかに言えるスピードで**連続3回音読**します。暗記しようとせず筋肉に馴染ませます。
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="relative flex gap-4 items-start">
+            <div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 z-10 shadow-md shadow-emerald-500/20">
+              4
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-sm font-bold text-white">自分の日常フレーズを「フレーズ金庫」へ蓄積</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                仕事や生活で「今日言った日本語」があれば、「フレーズ金庫」タブから自分で登録。あなた専用の最強スパーリング問題集に進化します。
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="pt-4 flex justify-center">
+          <button onclick="switchTab('sparring')" class="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+            <i class="ph-bold ph-sword text-lg"></i> 今すぐスパーリングを開始する
+          </button>
+        </div>
+      </div>
+
+      <!-- 2-Week Timeline Phase Roadmap -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+        <h3 class="text-base font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
+          <i class="ph-bold ph-calendar-check text-emerald-400 text-xl"></i>
+          2週間プログラム フェーズ展開表
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-2">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Phase 1: 1〜4日目
+            </span>
+            <h4 class="text-xs font-bold text-white">無意識の「動作・意図」の1文言語化</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              PCを開く・メールを送る等の日常動作を、短いSVO文脈で瞬時に口にするリハビリ期間。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-2">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
+              Phase 2: 5〜9日目
+            </span>
+            <h4 class="text-xs font-bold text-white">理由・接続詞（because / so / but）の接続</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              1文で切らず、so や because を挟んで「根拠・状況」を後ろに添える溜め（パウズ）技術を体得。
+            </p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-2">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              Phase 3: 10〜14日目
+            </span>
+            <h4 class="text-xs font-bold text-white">擬似ビジネススパーリング</h4>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              ランダム出題された状況報告・確認・反論の振りに対して、型をベースに結論から15秒以内で打ち返す。
+            </p>
+          </div>
+
+        </div>
+      </div>
+
     </section>
 
   </main>
 
   <script>
-    // Initial Stock Prompts (High-frequency business/daily triggers)
-    const initialPrompts = [
-      {
-        id: "p1",
-        jp: "あ、それ確認して後で折り返しますね。",
-        en: "Let me double-check and get back to you.",
-        cat: "仕事の即答",
-        tip: "『確認する』は check よりも『Let me double-check...』を型として先頭に置くと会話がスムーズになります。"
-      },
-      {
-        id: "p2",
-        jp: "言いたいことは分かりますが、別の見方をすると…",
-        en: "That makes sense, but looking at it another way...",
-        cat: "クッション言葉",
-        tip: "相手の主張を殺さずに反対意見を出す万能の接続フレーズです。"
-      },
-      {
-        id: "p3",
-        jp: "〜の件って今どんな進捗状況ですか？",
-        en: "Where are we on this project?",
-        cat: "状況確認",
-        tip: "What is the status... よりも『Where are we on...』が非常に自然で口に出しやすい型です。"
-      },
-      {
-        id: "p4",
-        jp: "念のためですが、スケジュールに遅れは出ていませんか？",
-        en: "Just to be safe, are we on schedule?",
-        cat: "事前確認",
-        tip: "『念のため』は『Just to be safe...』または『Just to make sure...』で即発射します。"
-      },
-      {
-        id: "p5",
-        jp: "集中力が切れてきたので、一旦少し散歩してきます。",
-        en: "I'm losing focus, so I'll take a quick break.",
-        cat: "日常・自己描写",
-        tip: "『〜なので』の so で文を繋ぐ練習。単文で切らず理由と行動をセットにします。"
-      }
+    // Initial Seed Phrase Data
+    const SEED_PHRASES = [
+      { id: 'p1', ja: '「確認して後ほど折り返します」と伝えたい時', en: 'Let me double-check that and get back to you.', category: '進捗確認・報告', notes: 'Let me double-check... の塊で発射する。' },
+      { id: 'p2', ja: '「〜の件、今どんな進捗ですか？」と聞く時', en: 'Where are we on this project?', category: '進捗確認・報告', notes: 'Where are we on [名詞]? で直感的に尋ねる。' },
+      { id: 'p3', ja: '相手の意見を尊重しつつ「別の視点から見ると…」と反論する時', en: "That's a valid point, but looking at it another way...", category: '意見・反論のバッファー', notes: "That's a valid point で受けてから but を繋ぐ。" },
+      { id: 'p4', ja: '「全員の認識が合っているか確認させて」と言う時', en: "Just to make sure we're on the same page...", category: '進捗確認・報告', notes: 'on the same page はビジネス最頻出。' },
+      { id: 'p5', ja: '「集中力が切れたので散歩してきます」と理由付きで伝える時', en: "I'm losing focus, so I'll take a short walk.", category: '意思表明', notes: 'so で理由と行動をセットにする訓練。' },
+      { id: 'p6', ja: '「一旦この方向性で進めておいてください」と指示する時', en: "Let's move forward with this for now.", category: '推進・指示', notes: 'for now (一旦) を末尾に添える。' }
     ];
 
-    let currentPrompt = null;
+    // Global Application State
+    let phraseVault = [];
+    let currentPhrase = null;
+    let timerInterval = null;
     let doneCount = 0;
-    let vault = JSON.parse(localStorage.getItem('english_vault')) || initialPrompts;
 
-    function saveVault() {
-      localStorage.setItem('english_vault', JSON.stringify(vault));
-      updateVaultUI();
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      initData();
+      nextSparringPrompt();
+      renderVault();
+    });
+
+    function initData() {
+      try {
+        const savedVault = localStorage.getItem('ps_vault_v3');
+        phraseVault = savedVault ? JSON.parse(savedVault) : [...SEED_PHRASES];
+      } catch (e) {
+        phraseVault = [...SEED_PHRASES];
+      }
+      updateStatsUI();
     }
 
+    function saveData() {
+      try {
+        localStorage.setItem('ps_vault_v3', JSON.stringify(phraseVault));
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+      }
+      updateStatsUI();
+    }
+
+    function updateStatsUI() {
+      document.getElementById('tab-vault-count').innerText = phraseVault.length;
+      document.getElementById('header-done-count').innerText = `${doneCount} 回`;
+    }
+
+    // Tab Navigation Switcher (Handles 3 Tabs)
     function switchTab(tab) {
-      const sparringTab = document.getElementById('tab-sparring');
-      const vaultTab = document.getElementById('tab-vault');
-      const sparringBtn = document.getElementById('tab-sparring-btn');
-      const vaultBtn = document.getElementById('tab-vault-btn');
+      const sparringView = document.getElementById('view-sparring');
+      const vaultView = document.getElementById('view-vault');
+      const guideView = document.getElementById('view-guide');
+
+      const navSparring = document.getElementById('nav-sparring');
+      const navVault = document.getElementById('nav-vault');
+      const navGuide = document.getElementById('nav-guide');
+
+      // Hide all tabs by default
+      sparringView.classList.add('hidden');
+      sparringView.classList.remove('flex');
+      vaultView.classList.add('hidden');
+      vaultView.classList.remove('flex');
+      guideView.classList.add('hidden');
+      guideView.classList.remove('flex');
+
+      // Inactive styles
+      const inactiveClass = 'flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50';
+      const activeClass = 'flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/10';
+
+      navSparring.className = inactiveClass;
+      navVault.className = inactiveClass;
+      navGuide.className = inactiveClass;
 
       if (tab === 'sparring') {
-        sparringTab.classList.remove('hidden');
-        vaultTab.classList.add('hidden');
-        sparringBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
-        vaultBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
-      } else {
-        sparringTab.classList.add('hidden');
-        vaultTab.classList.remove('hidden');
-        vaultBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
-        sparringBtn.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
+        sparringView.classList.remove('hidden');
+        sparringView.classList.add('flex');
+        navSparring.className = activeClass;
+      } else if (tab === 'vault') {
+        vaultView.classList.remove('hidden');
+        vaultView.classList.add('flex');
+        navVault.className = activeClass;
+        renderVault();
+      } else if (tab === 'guide') {
+        guideView.classList.remove('hidden');
+        guideView.classList.add('flex');
+        navGuide.className = activeClass;
       }
     }
 
-    function nextPrompt() {
-      const randomIndex = Math.floor(Math.random() * vault.length);
-      currentPrompt = vault[randomIndex];
+    function nextSparringPrompt() {
+      clearInterval(timerInterval);
+      resetTimerUI();
 
-      document.getElementById('category-badge').innerText = currentPrompt.cat || "カスタムフレーズ";
-      document.getElementById('prompt-jp').innerText = currentPrompt.jp;
-      document.getElementById('prompt-en').innerText = currentPrompt.en;
-      document.getElementById('prompt-tip').innerText = currentPrompt.tip || "口に馴染むまで3回声に出してみましょう。";
+      if (phraseVault.length === 0) {
+        document.getElementById('drill-ja-prompt').innerText = 'フレーズ金庫が空です。まずはフレーズを追加してください。';
+        document.getElementById('drill-en-phrase').innerText = '';
+        document.getElementById('drill-notes').innerText = '';
+        return;
+      }
 
-      document.getElementById('answer-box').classList.add('hidden');
-      document.getElementById('reveal-btn').classList.remove('hidden');
-      document.getElementById('add-to-vault-btn').classList.add('hidden');
-      document.getElementById('next-btn').innerText = "次のお題へ";
+      const randomIndex = Math.floor(Math.random() * phraseVault.length);
+      currentPhrase = phraseVault[randomIndex];
+
+      document.getElementById('drill-category-badge').innerText = currentPhrase.category || '一般';
+      document.getElementById('drill-ja-prompt').innerText = `「${currentPhrase.ja}」`;
+      document.getElementById('drill-en-phrase').innerText = `"${currentPhrase.en}"`;
+      document.getElementById('drill-notes').innerText = currentPhrase.notes ? `ポイント: ${currentPhrase.notes}` : '';
+    }
+
+    function resetTimerUI() {
+      document.getElementById('timer-display').innerText = '3s';
+      const ring = document.getElementById('timer-ring-path');
+      ring.style.strokeDashoffset = '0';
+      ring.className.baseVal = 'text-emerald-500 timer-ring';
+
+      const targetBox = document.getElementById('target-phrase-box');
+      targetBox.classList.add('opacity-20', 'blur-md', 'select-none');
+      targetBox.classList.remove('opacity-100', 'blur-none');
+    }
+
+    function startCountdown() {
+      resetTimerUI();
+      let secondsLeft = 3;
+      const ring = document.getElementById('timer-ring-path');
+
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        document.getElementById('timer-display').innerText = `${secondsLeft}s`;
+
+        const offset = ((3 - secondsLeft) / 3) * 100;
+        ring.style.strokeDashoffset = `${offset}`;
+
+        if (secondsLeft === 1) {
+          ring.className.baseVal = 'text-amber-500 timer-ring';
+        }
+
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          revealAnswer();
+        }
+      }, 1000);
     }
 
     function revealAnswer() {
-      if (!currentPrompt) return;
-      document.getElementById('answer-box').classList.remove('hidden');
-      document.getElementById('reveal-btn').classList.add('hidden');
+      clearInterval(timerInterval);
+      document.getElementById('timer-display').innerText = '0s';
 
-      // Check if already in vault
-      const exists = vault.some(item => item.en === currentPrompt.en);
-      if (!exists) {
-        document.getElementById('add-to-vault-btn').classList.remove('hidden');
-      }
+      const targetBox = document.getElementById('target-phrase-box');
+      targetBox.classList.remove('opacity-20', 'blur-md', 'select-none');
+      targetBox.classList.add('opacity-100', 'blur-none');
 
       doneCount++;
-      document.getElementById('done-count').innerText = doneCount;
-      speakCurrentAnswer();
+      updateStatsUI();
+      speakCurrentPhrase();
     }
 
-    function speakCurrentAnswer() {
-      if (!currentPrompt) return;
-      const utterance = new SpeechSynthesisUtterance(currentPrompt.en);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
+    // Web Speech API Integration
+    function speakCurrentPhrase() {
+      if (!currentPhrase || !currentPhrase.en) return;
+      speakText(currentPhrase.en);
     }
 
     function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
-      utterance.rate = 0.9;
+      utterance.rate = 0.95;
       window.speechSynthesis.speak(utterance);
     }
 
-    function addCustomPhrase() {
-      const jp = document.getElementById('input-jp').value.trim();
-      const en = document.getElementById('input-en').value.trim();
+    function renderVault() {
+      const container = document.getElementById('vault-grid');
+      const searchQuery = (document.getElementById('vault-search').value || '').toLowerCase().trim();
 
-      if (!jp || !en) {
-        alert("日本語と英語の両方を入力してください。");
-        return;
-      }
+      const filtered = phraseVault.filter(p => {
+        return p.ja.toLowerCase().includes(searchQuery) || p.en.toLowerCase().includes(searchQuery);
+      });
 
-      const newItem = {
-        id: "c_" + Date.now(),
-        jp: jp,
-        en: en,
-        cat: "マイフレーズ",
-        tip: "自分が日常でよく使う言葉から登録したフレーズです。"
-      };
-
-      vault.unshift(newItem);
-      saveVault();
-
-      document.getElementById('input-jp').value = "";
-      document.getElementById('input-en').value = "";
-      alert("金庫に追加しました！");
-    }
-
-    function removePhrase(id) {
-      vault = vault.filter(item => item.id !== id);
-      saveVault();
-    }
-
-    function updateVaultUI() {
-      const container = document.getElementById('vault-list');
-      document.getElementById('vault-count-badge').innerText = vault.length;
-
-      if (vault.length === 0) {
-        container.innerHTML = `<p class="text-center text-xs text-slate-500 py-8">ストックされているフレーズがありません。</p>`;
-        return;
-      }
-
-      container.innerHTML = vault.map(item => `
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-between items-start gap-4">
-          <div class="space-y-1">
-            <span class="text-[10px] bg-slate-900 border border-slate-800 text-indigo-400 font-semibold px-2 py-0.5 rounded">
-              ${item.cat || 'マイフレーズ'}
-            </span>
-            <p class="text-xs text-slate-400">${item.jp}</p>
-            <p class="text-sm font-bold text-indigo-200 font-mono">${item.en}</p>
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center text-slate-500">
+            <i class="ph-bold ph-folder-open text-3xl mb-2"></i>
+            <p class="text-xs">該当するフレーズがありません。</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-indigo-400 p-2 rounded-lg hover:bg-slate-900 transition">
-              <i class="ph-bold ph-speaker-high text-base"></i>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="bg-slate-900/80 border border-slate-800 hover:border-slate-700 p-4 rounded-xl flex flex-col justify-between gap-3 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                ${item.category}
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 font-medium mb-1">${item.ja}</p>
+            <p class="text-sm font-bold text-emerald-300 font-mono">${item.en}</p>
+            ${item.notes ? `<p class="text-xs text-slate-500 mt-2 italic">💡 ${item.notes}</p>` : ''}
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+            <button onclick="triggerSpeakById('${item.id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="音声を聴く">
+              <i class="ph-bold ph-speaker-high text-sm"></i>
             </button>
-            <button onclick="removePhrase('${item.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition">
-              <i class="ph-bold ph-trash text-base"></i>
+            <button onclick="deletePhrase('${item.id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 text-slate-500 hover:text-rose-400 transition-colors" title="削除">
+              <i class="ph-bold ph-trash text-sm"></i>
             </button>
           </div>
         </div>
       `).join('');
     }
 
-    // Initialize
-    updateVaultUI();
+    function triggerSpeakById(id) {
+      const item = phraseVault.find(p => p.id === id);
+      if (item) speakText(item.en);
+    }
+
+    function handleCustomPhraseSubmit(e) {
+      e.preventDefault();
+      const ja = document.getElementById('input-ja').value.trim();
+      const en = document.getElementById('input-en').value.trim();
+      const category = document.getElementById('input-category').value;
+      const notes = document.getElementById('input-notes').value.trim();
+
+      if (!ja || !en) return;
+
+      const newObj = {
+        id: 'custom-' + Date.now(),
+        ja: ja,
+        en: en,
+        category: category,
+        notes: notes
+      };
+
+      phraseVault.unshift(newObj);
+      saveData();
+
+      document.getElementById('input-ja').value = '';
+      document.getElementById('input-en').value = '';
+      document.getElementById('input-notes').value = '';
+
+      renderVault();
+    }
+
+    function deletePhrase(id) {
+      phraseVault = phraseVault.filter(p => p.id !== id);
+      saveData();
+      renderVault();
+    }
   </script>
 </body>
 </html>
